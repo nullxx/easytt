@@ -1,3 +1,3 @@
 # easytt
 
-Use (here)[https://easytt.nullx.me/]
+Use [here](https://easytt.nullx.me/)
