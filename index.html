@@ -97,6 +97,7 @@ input[type=submit]:hover {
   </div>
   </form>
   <pre id="resultCode" class="prettyprint"></pre>
+  <a href="javascript:void(0)" id="dlbtn" style="display: none;"><button>Descargar</button></a>
 </div>
 <script type="text/javascript">
   const form = document.querySelector('form')
@@ -104,8 +105,7 @@ input[type=submit]:hover {
   nombreClase = document.getElementById("classnameL").value;
   parametrosComa = document.getElementById("parametrosL").value;
   parametrosSplited = parametrosComa.match(/[^,\s?]+/g)
-  resultado = `
-class ${nombreClase}():
+  resultado = `class ${nombreClase}():
   def __init__(self,${parametrosComa}):
     ${getParam()}
   ${getGetters()}
@@ -113,6 +113,8 @@ class ${nombreClase}():
   `
   s = document.getElementById("resultCode")
   s.innerHTML = resultado
+  setTimeout("create('"+stringEscape(resultado)+"', '"+nombreClase+".py', 'text/plain')");
+  document.getElementById("dlbtn").style.display = 'block';
 })
 function getParam(){
   var final = ""
@@ -130,6 +132,7 @@ function getGetters(){
     }
     return final
 }
+
 function getSetters(){
   var final = ""
     for (var i = parametrosSplited.length - 1; i >= 0; i--) {
@@ -137,6 +140,16 @@ function getSetters(){
       self.__${parametrosSplited[i]} = param\n  `
     }
     return final
+}
+function stringEscape(s) {
+    return s ? s.replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/\t/g,'\\t').replace(/\v/g,'\\v').replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/[\x00-\x1F\x80-\x9F]/g,hex) : s;
+    function hex(c) { var v = '0'+c.charCodeAt(0).toString(16); return '\\x'+v.substr(v.length-2); }
+}
+function create(text, name, type) {
+  var dlbtn = document.getElementById("dlbtn");
+  var file = new Blob([text], {type: type});
+  dlbtn.href = URL.createObjectURL(file);
+  dlbtn.download = name;
 }
 </script>
 </body>
